@@ -298,36 +298,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   });
                 },
+                onDoubleTap: (){
+                  isContainer = false;
+                  setState(() {
+
+                  });
+                },
                 child: Stack(
                   children: [
-                    // isContainer? SizedBox(
-                    //   height : 50,
-                    //   width: 200,
-                    //   child: TextField(
-                    //     style: TextStyle(
-                    //         fontFamily: 'ubuntu-bold',
-                    //         fontSize: 30,
-                    //         color: Colors.black
-                    //     ),
-                    //     onChanged: (value) => calculations(),
-                    //     controller: customTipController,
-                    //     keyboardType: TextInputType.number,
-                    //     decoration: InputDecoration(
-                    //         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    //         suffixText: "%",
-                    //         hintStyle: TextStyle(
-                    //             fontFamily: 'ubuntu-bold',
-                    //             fontSize: 25,
-                    //             color: Colors.black
-                    //         ),
-                    //         fillColor: Colors.white,
-                    //         filled: true,
-                    //         border: OutlineInputBorder(
-                    //             borderSide: BorderSide.none
-                    //         )
-                    //     ),
-                    //   ),
-                    // ) :
+                    isContainer? SizedBox(
+                      height : 50,
+                      width: 200,
+                      child: TextField(
+                        style: TextStyle(
+                            fontFamily: 'ubuntu-bold',
+                            fontSize: 30,
+                            color: Colors.black
+                        ),
+                        onChanged: (value) => calculations(),
+                        controller: customTipController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            suffixText: currency,
+                            hintStyle: TextStyle(
+                                fontFamily: 'ubuntu-bold',
+                                fontSize: 25,
+                                color: Colors.black
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide.none
+                            )
+                        ),
+                      ),
+                    ) :
                     Container(
                       height : 50,
                       width: 200,
@@ -502,30 +508,57 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void calculations(){
-   if(billController.text != ""){
+  // void calculations(){
+  //
+  //  if(billController.text != ""){
+  //
+  //    billamt = double.parse(billController.text.toString());
+  //
+  //    log(billamt.toString());
+  //
+  //    totalTipPer = billamt * (tipPer / 100);
+  //
+  //    log(customTipController.text.toString());
+  //
+  //    totalBillAmt = billamt + totalTipPer;
+  //
+  //    customTip = double.parse(customTipController.text.toString());
+  //
+  //    perPerson = totalBillAmt / split + customTip;
+  //
+  //    setState(() {
+  //
+  //    });
+  //
+  //  } else {
+  //    split = 1;
+  //    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please Enter Bill First")));
+  //  }
+  // }
 
-     billamt = double.parse(billController.text.toString());
-
-     log(billamt.toString());
-
-     totalTipPer = billamt * (tipPer / 100);
-
-      // customTip = double.parse(customTipController.text.toString());
-    // log(customTip.toString());
-
-     totalTipPer = billamt * (customTip / 100);
-
-     totalBillAmt = billamt + totalTipPer;
-
-     perPerson = totalBillAmt / split;
-
-     setState(() {
-
-     });
-   } else {
-     split = 1;
-     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please Enter Bill First")));
-   }
+  void calculations() {
+    if (billController.text.isNotEmpty) {
+      try {
+        billamt = double.parse(billController.text);
+       if(isContainer){
+         totalTipPer = double.tryParse(customTipController.text) ?? 0.0;
+       } else {
+         totalTipPer = billamt * (tipPer / 100);
+       }
+        totalBillAmt = billamt + totalTipPer;
+        perPerson = totalBillAmt / split;
+        setState(() {});
+      } catch (e) {
+        // Handle the error, for example:
+        print('Error parsing double: $e');
+      }
+    } else {
+      split = 1;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please Enter Bill First")),
+      );
+    }
   }
+
+
 }
